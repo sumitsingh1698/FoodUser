@@ -32,6 +32,8 @@ class MenuCell extends StatefulWidget {
 class _MenuCellState extends State<MenuCell> {
   String selectedAdd;
   int selectedPriceId;
+  int selectedItemId;
+  AddRemoveCart addRemoveCart;
 
   @override
   initState() {
@@ -123,6 +125,7 @@ class _MenuCellState extends State<MenuCell> {
                           GestureDetector(
                               onTap: () {
                                 print("String");
+                                selectedItemId = widget.item.id;
                                 _buildPricingList(context, widget.item);
                               },
                               child: Padding(
@@ -180,16 +183,6 @@ class _MenuCellState extends State<MenuCell> {
   List<Widget> createRadioListUsers(Single single, mystate) {
     List<Widget> widgets = [];
 
-    // widgets.add(Container(
-    //   padding: EdgeInsets.all(5.0),
-    //   child: Center(
-    //     child: Text(
-    //       "Select the Size",
-    //       style: TextStyle(fontSize: 20),
-    //     ),
-    //   ),
-    // ));
-
     for (Pricing price in single.pricing) {
       widgets.add(
         RadioListTile(
@@ -209,8 +202,8 @@ class _MenuCellState extends State<MenuCell> {
           onChanged: (current) {
             print("Current User $current");
             setSelectedUser(current);
-
             widget.selectedAdd(widget.item.slug);
+            addRemoveCart = AddRemoveCart(single.id, selectedPriceId);
             mystate(() {});
             print("${price.id} dd $current");
           },
@@ -218,108 +211,18 @@ class _MenuCellState extends State<MenuCell> {
         ),
       );
     }
+
+    if (selectedPriceId != null) {
+      addRemoveCart = AddRemoveCart(single.id, selectedPriceId);
+    }
+
     selectedPriceId != null
-        ? widgets.add(Container(
-            padding: EdgeInsets.all(10.0),
-            child: AddRemoveCart(single.id, selectedPriceId)))
+        ? widgets
+            .add(Container(padding: EdgeInsets.all(10.0), child: addRemoveCart))
         : Container();
     return widgets;
   }
 }
-
-// class MenuCell extends StatelessWidget {
-//   var item;
-//   final i;
-
-//   MenuCell(this.item, this.i);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//         child: Padding(
-//       padding: const EdgeInsets.symmetric(horizontal: 26.0),
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//         children: <Widget>[
-//           InkWell(
-//             onTap: () => Navigator.push(
-//               context,
-//               MaterialPageRoute(
-//                   builder: (context) => FoodItemDetailPage(item.slug)),
-//             ),
-//             child: Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: <Widget>[
-//                   SizedBox(
-//                     height: 80,
-//                     width: 80,
-//                     child: CachedNetworkImage(
-//                       imageUrl: item.image,
-//                       errorWidget: (context, url, error) =>
-//                           new Icon(Icons.error),
-//                       fit: BoxFit.fill,
-//                     ),
-//                   ),
-//                   Column(
-//                     mainAxisAlignment: MainAxisAlignment.center,
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: <Widget>[
-//                       SizedBox(
-//                         width: 200,
-//                         child: Text(
-//                           item.name,
-//                           style:
-//                               CustomFontStyle.regularBoldTextStyle(blackColor),
-//                         ),
-//                       ),
-//                       SizedBox(
-//                         height: 10,
-//                       ),
-//                       Container(
-//                         width: 200,
-//                         child: Text(
-//                           item.shortDescription,
-//                           maxLines: 1,
-//                           softWrap: false,
-//                           overflow: TextOverflow.ellipsis,
-//                           style: CustomFontStyle.RegularTextStyle(grey1Color),
-//                         ),
-//                       ),
-//                       SizedBox(
-//                         height: 10,
-//                       ),
-//                       Row(
-//                         children: <Widget>[
-//                           Container(
-//                             width: MediaQuery.of(context).size.width * 0.35,
-//                             child: Text(
-//                               "₹ " + item.price.toString(),
-//                               style: CustomFontStyle.regularFormTextStyle(
-//                                   blackColor),
-//                             ),
-//                           ),
-//                           AddRemoveCart(item.slug),
-//                         ],
-//                       ),
-//                     ],
-//                   ),
-//                 ]),
-//           ),
-//           SizedBox(
-//             height: 5,
-//           ),
-//           Container(
-//             color: cloudsColor,
-//             height: 1,
-//           ),
-//           SizedBox(
-//             height: 20,
-//           )
-//         ],
-//       ),
-//     ));
-//   }
-// }
 
 class AddRemoveCart extends StatefulWidget {
   final itemId;
@@ -353,6 +256,7 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
   void initState() {
     super.initState();
     isLoading = true;
+
     getSharedPrefs();
 
     print('onnonononoonoonoonon');
@@ -377,6 +281,7 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
 
     print(widget.itemId);
     int id = widget.itemId;
+    bool itemExist = false;
     // print('foood itme price is ${data.cartitem[0].fooditem}');
     // print(data.cartitem.length);
     // print(data.fooditem.length);
@@ -384,15 +289,46 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
       if (data.cartitem.length != 0) {
         print(widget.pricingId.toString());
         print("here");
+        for (Cartitem carti in data.cartitem) {
+          if (carti.id == id && carti.pricing == widget.pricingId)
+            itemExist = true;
+          currentItem = new cartModel.Cartitems(
+              fooditem: carti.id,
+              count: data.cartitem[0].count,
+              price: (data.cartitem[0].fooditem.pricing
+                  .firstWhere(
+                      (element) => element.id == data.cartitem[0].pricing)
+                  .price),
+              pricing: data.cartitem[0].pricing,
+              restuarantId: data.cartitem[0].fooditem.restaurant);
+
+          // _addToCart(context, currentItem.fooditem, currentItem.count,
+          //     currentItem.price, currentItem.restuarantId, widget.pricingId);
+        }
+
         currentItem = new cartModel.Cartitems(
             fooditem: id,
-            count: data.cartitem[0].count,
-            price: (data.cartitem[0].fooditem.pricing
-                .firstWhere((element) => element.id == widget.pricingId)
-                .price),
+            count: 1,
+            price: widget.pricingId == null
+                ? data.fooditem[0].pricing[0].price
+                : (data.fooditem[0].pricing
+                    .firstWhere((element) => element.id == widget.pricingId)
+                    .price),
             pricing: widget.pricingId,
-            restuarantId: data.cartitem[0].fooditem.restaurant);
-      } else {
+            restuarantId: data.fooditem[0].restaurant);
+        _addToCart(context, currentItem.fooditem, currentItem.count,
+            currentItem.price, currentItem.restuarantId, widget.pricingId);
+
+        // currentItem = new cartModel.Cartitems(
+        //     fooditem: data.cartitem[0],
+        //     count: data.cartitem[0].count,
+        //     price: (data.cartitem[0].fooditem.pricing
+        //         .firstWhere((element) => element.id == data.cartitem[0].pricing)
+        //         .price),
+        //     pricing: data.cartitem[0].pricing,
+        //     restuarantId: data.cartitem[0].fooditem.restaurant);
+
+      } else if (!itemExist) {
         currentItem = new cartModel.Cartitems(
             fooditem: id,
             count: 1,
@@ -651,6 +587,7 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
 
   _addToCart(BuildContext context, int id, int _count, double _price,
       int _restaurantId, int pricing) async {
+    print("AddToCart menu_list_item");
     Widget optionYes = CupertinoDialogAction(
       child: Text(
         yes,

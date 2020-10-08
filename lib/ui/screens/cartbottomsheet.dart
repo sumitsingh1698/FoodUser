@@ -550,6 +550,7 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
   _addToCart(BuildContext context, int id, int _count, double _price,
       int _restaurantId, int pricingId) async {
     bool lastOne = false;
+    print("addToCart cartbottomSheet");
     if (finalItems.length == 0) {
       finalItems.add(new cartModel.Cartitems(
           fooditem: id,
@@ -565,7 +566,8 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
       }
       bool itemExist = false;
       for (var i = 0; i < finalItems.length; i++) {
-        if (finalItems[i].fooditem == id) {
+        if (finalItems[i].fooditem == id &&
+            finalItems[i].pricing == pricingId) {
           itemExist = true;
           if (_count != 0)
             finalItems[i].count = _count;

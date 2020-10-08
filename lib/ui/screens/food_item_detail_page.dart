@@ -378,6 +378,7 @@ class _FoodItemDetailPageState extends State<FoodItemDetailPage> {
 
   _addToCart(BuildContext context, int id, int _count, double _price,
       int _restaurantId, int pricing) async {
+    print("addToCart Food_item_detail_page");
     Widget optionYes = CupertinoDialogAction(
       child: Text(
         yes,

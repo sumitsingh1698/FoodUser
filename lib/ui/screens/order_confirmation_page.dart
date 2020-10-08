@@ -64,6 +64,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
   }
 
   void getCurrentCartData() async {
+    print("getCurrentCartDAta orderConfimation");
     try {
       cartDataResponse = await _restaurantDataSource.cartDetails(token);
       cartDataRes = cartDataResponse[1];
@@ -74,7 +75,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
                 fooditem: cartDataRes.cartitems[i].fooditem.id,
                 itemName: cartDataRes.cartitems[i].fooditem.name,
                 count: cartDataRes.cartitems[i].count,
-                pricing: cartDataRes.cartitems[i].fooditem.pricing[0].id,
+                pricing: cartDataRes.cartitems[i].pricingId,
                 itemPrice: cartDataRes.cartitems[i].fooditem.pricing
                     .firstWhere((element) =>
                         element.id == cartDataRes.cartitems[i].pricingId)

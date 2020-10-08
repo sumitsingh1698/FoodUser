@@ -44,11 +44,13 @@ class _CartDetailPageState extends State<CartDetailPage> {
 
   @override
   void initState() {
+    print("CArt UI Started");
     super.initState();
     getSharedPrefs();
   }
 
   Future<Null> getSharedPrefs() async {
+    print("getSharedPrefs cartui");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var loggedIn = prefs.getBool("loggedIn").toString();
     if (loggedIn == 'null' || loggedIn == 'false') {
@@ -72,6 +74,7 @@ class _CartDetailPageState extends State<CartDetailPage> {
   }
 
   Future getCurrentCartData() async {
+    print("getCurrentCartData cartui");
     try {
       print('toooooooooken');
       print(token);
@@ -89,7 +92,7 @@ class _CartDetailPageState extends State<CartDetailPage> {
                       .firstWhere((element) =>
                           element.id == cartDataRes.cartitems[i].pricingId)
                       .price,
-                  pricing: cartDataRes.cartitems[i].fooditem.pricing[0].id,
+                  pricing: cartDataRes.cartitems[i].pricingId,
                   restuarantId:
                       cartDataRes.cartitems[i].fooditem.restaurant.id));
           }
@@ -112,6 +115,7 @@ class _CartDetailPageState extends State<CartDetailPage> {
   }
 
   calculateTotalPrice() {
+    print("calculateTotalPrice cartui");
     priceIncludingTax = 0;
     setState(() {
       for (var i = 0; i < finalItems.length; i++) {
@@ -121,6 +125,7 @@ class _CartDetailPageState extends State<CartDetailPage> {
   }
 
   addDataToCartServer(finalMap, lastOne) async {
+    print("addDartToCartServer carui");
     setState(() {
       _countLoader = true;
     });
@@ -136,6 +141,7 @@ class _CartDetailPageState extends State<CartDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("build cartui");
     _cartProvider = Provider.of<CartModel>(context, listen: true);
     return new Scaffold(
         backgroundColor: Colors.white,
@@ -183,6 +189,7 @@ class _CartDetailPageState extends State<CartDetailPage> {
   }
 
   Widget _buildBottomButton(context, String _totalPrice) {
+    print("buildButtomButton cartui");
     return InkWell(
         onTap: () {
           Navigator.push(context,
@@ -235,6 +242,7 @@ class _CartDetailPageState extends State<CartDetailPage> {
   }
 
   Widget _buildDetailsUi(context) {
+    print("buildDetailsUi cartui");
     return ListView(
         shrinkWrap: true,
         physics: const AlwaysScrollableScrollPhysics(),
@@ -406,7 +414,11 @@ class _CartDetailPageState extends State<CartDetailPage> {
                                                                           index]
                                                                       .fooditem
                                                                       .restaurant
-                                                                      .id);
+                                                                      .id,
+                                                                  cartDataRes
+                                                                      .cartitems[
+                                                                          index]
+                                                                      .pricingId);
                                                             },
                                                             child: Icon(
                                                               Icons.remove,
@@ -469,7 +481,11 @@ class _CartDetailPageState extends State<CartDetailPage> {
                                                                       index]
                                                                   .fooditem
                                                                   .restaurant
-                                                                  .id);
+                                                                  .id,
+                                                              cartDataRes
+                                                                  .cartitems[
+                                                                      index]
+                                                                  .pricingId);
                                                         },
                                                         child: Icon(
                                                           Icons.add,
@@ -525,11 +541,10 @@ class _CartDetailPageState extends State<CartDetailPage> {
                                                                     index]
                                                                 .pricingId)
                                                         .price,
-                                                    cartDataRes
-                                                        .cartitems[index]
-                                                        .fooditem
-                                                        .restaurant
-                                                        .id);
+                                                    cartDataRes.cartitems[index]
+                                                        .fooditem.restaurant.id,
+                                                    cartDataRes.cartitems[index]
+                                                        .pricingId);
                                               },
                                             ),
                                           ],
@@ -584,7 +599,9 @@ class _CartDetailPageState extends State<CartDetailPage> {
   }
 
   _addToCart(BuildContext context, int id, int _count, double _price,
-      int _restaurantId) async {
+      int _restaurantId, int pricingId) async {
+    print("addToCArt cartUi");
+
     bool lastOne = false;
     if (finalItems.length == 0) {
       finalItems.add(new cartModel.Cartitems(
@@ -594,19 +611,23 @@ class _CartDetailPageState extends State<CartDetailPage> {
           restuarantId: _restaurantId));
 
       calculateTotalPrice();
+      print("here 1");
     } else {
       if (finalItems[0].restuarantId != _restaurantId) {
         finalItems.clear();
       }
+      print("here 1");
       bool itemExist = false;
       for (var i = 0; i < finalItems.length; i++) {
-        if (finalItems[i].fooditem == id) {
+        if (finalItems[i].fooditem == id &&
+            finalItems[i].pricing == pricingId) {
           itemExist = true;
           if (_count != 0)
             finalItems[i].count = _count;
           else {
             lastOne = true;
-            finalItems.removeAt(i);
+            finalItems.remove(finalItems
+                .indexWhere((element) => element.pricing == pricingId));
           }
         }
       }
@@ -623,6 +644,7 @@ class _CartDetailPageState extends State<CartDetailPage> {
   }
 
   _addFinalToCart(bool _lastone) async {
+    print("addFinalToCArt cartui");
     final cartModel.CartUploadModel finalCart = new cartModel.CartUploadModel(
       cartitems: finalItems,
       total: priceIncludingTax,

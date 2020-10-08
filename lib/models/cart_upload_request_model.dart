@@ -98,6 +98,7 @@ class Cartitem {
   Fooditem fooditem;
   int count;
   int cart;
+  int pricing;
 
   Cartitem({this.id, this.fooditem, this.count, this.cart});
 
@@ -108,6 +109,7 @@ class Cartitem {
         : null;
     count = json['count'];
     cart = json['cart'];
+    pricing = json['pricing'];
   }
 
   Map<String, dynamic> toJson() {
@@ -118,6 +120,7 @@ class Cartitem {
     }
     data['count'] = this.count;
     data['cart'] = this.cart;
+    data['pricing'] = this.pricing;
     return data;
   }
 }
