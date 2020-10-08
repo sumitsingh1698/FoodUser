@@ -14,6 +14,8 @@ class AddToCartData {
         .addItemToCart(addToCartUrl, token, cartItemList)
         .then((dynamic res) async {
       if (res['status']) {
+        print("ADDed to CArt");
+
         return true;
       } else {
         return false;

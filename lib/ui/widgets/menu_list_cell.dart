@@ -354,6 +354,7 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
     super.initState();
     isLoading = true;
     getSharedPrefs();
+
     print('onnonononoonoonoonon');
   }
 
@@ -413,7 +414,9 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
   void getCurrentCartData() async {
     try {
       cartDataResponse = await _restaurantDataSource.cartDetails(token);
+      print("Cart Detail Fetched");
       if (cartDataResponse[0] == true) cartDataRes = cartDataResponse[1];
+
       saveLocalCart();
 
       calculateTotalPrice();
@@ -466,6 +469,7 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
       _countLoader = true;
     });
 
+    print("add to cart");
     updatedCartFlag = await cartData.addItemToCart(token, finalMap);
     if (updatedCartFlag) {
       setState(() {
@@ -714,7 +718,10 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
       }
       bool itemExist = false;
       for (var i = 0; i < finalItems.length; i++) {
+        print("checking data exsist");
         if (finalItems[i].fooditem == id && finalItems[i].pricing == pricing) {
+          print("checking existance");
+
           itemExist = true;
           if (_count != 0)
             finalItems[i].count = _count;

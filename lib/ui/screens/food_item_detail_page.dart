@@ -1,3 +1,4 @@
+import 'package:Belly/models/pricing.dart';
 import 'package:Belly/ui/screens/welcome_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
@@ -19,8 +20,9 @@ import 'dart:async';
 
 class FoodItemDetailPage extends StatefulWidget {
   final itemId;
+  final pricingId;
 
-  FoodItemDetailPage(this.itemId);
+  FoodItemDetailPage(this.itemId, @required this.pricingId);
 
   @override
   _FoodItemDetailPageState createState() => _FoodItemDetailPageState();
@@ -253,8 +255,13 @@ class _FoodItemDetailPageState extends State<FoodItemDetailPage> {
                   setState(() {
                     currentItem.count--;
                   });
-                  _addToCart(context, currentItem.fooditem, currentItem.count,
-                      currentItem.price, currentItem.restuarantId);
+                  _addToCart(
+                      context,
+                      currentItem.fooditem,
+                      currentItem.count,
+                      currentItem.price,
+                      currentItem.restuarantId,
+                      widget.pricingId);
                 },
               )
             : IconButton(
@@ -299,8 +306,13 @@ class _FoodItemDetailPageState extends State<FoodItemDetailPage> {
               setState(() {
                 currentItem.count++;
               });
-              _addToCart(context, currentItem.fooditem, currentItem.count,
-                  currentItem.price, currentItem.restuarantId);
+              _addToCart(
+                  context,
+                  currentItem.fooditem,
+                  currentItem.count,
+                  currentItem.price,
+                  currentItem.restuarantId,
+                  widget.pricingId);
             }
           },
         ),
@@ -365,7 +377,7 @@ class _FoodItemDetailPageState extends State<FoodItemDetailPage> {
   }
 
   _addToCart(BuildContext context, int id, int _count, double _price,
-      int _restaurantId) async {
+      int _restaurantId, int pricing) async {
     Widget optionYes = CupertinoDialogAction(
       child: Text(
         yes,
@@ -432,7 +444,7 @@ class _FoodItemDetailPageState extends State<FoodItemDetailPage> {
       }
       bool itemExist = false;
       for (var i = 0; i < finalItems.length; i++) {
-        if (finalItems[i].fooditem == id) {
+        if (finalItems[i].fooditem == id && finalItems[i].pricing == pricing) {
           itemExist = true;
           if (_count != 0)
             finalItems[i].count = _count;
