@@ -1,6 +1,6 @@
+import 'package:Belly/models/cart_upload_request_model.dart';
 import 'package:Belly/ui/screens/cartbottomsheet.dart';
 import 'package:Belly/ui/screens/food_searchPage.dart';
-import 'package:Belly/ui/screens/order_confirmation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +12,6 @@ import 'package:Belly/data/restaurant_data.dart';
 import 'package:Belly/models/cart_provider_class.dart';
 import 'package:Belly/models/restaurant_detail_model.dart';
 import 'package:Belly/ui/widgets/menu_list_cell.dart';
-import 'cartui.dart';
 
 class RestaurantDetailPage extends StatefulWidget {
   final restaurantId;
@@ -62,6 +61,7 @@ class _RestaurantDetailPage extends State<RestaurantDetailPage> {
   void getData() async {
     data = await _restaurantDataSource.restaurantDetail(
         token, widget.restaurantId);
+    print(data);
     print('caaaaatttttttttteeeeeeeeeeeggggggoryyyyy');
     data.single.forEach((e) {
       if (!tabheading.contains(e.category)) {

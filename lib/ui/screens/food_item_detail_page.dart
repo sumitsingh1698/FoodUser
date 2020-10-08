@@ -72,13 +72,13 @@ class _FoodItemDetailPageState extends State<FoodItemDetailPage> {
         currentItem = new cartModel.Cartitems(
             fooditem: data.cartitem[0].fooditem.id,
             count: data.cartitem[0].count,
-            price: data.cartitem[0].fooditem.price,
+            price: data.cartitem[0].fooditem.pricing[0].price,
             restuarantId: data.cartitem[0].fooditem.restaurant);
       } else {
         currentItem = new cartModel.Cartitems(
             fooditem: data.fooditem[0].id,
             count: 0,
-            price: data.fooditem[0].price,
+            price: data.fooditem[0].pricing[0].price,
             restuarantId: data.fooditem[0].restaurant);
       }
 
@@ -110,7 +110,10 @@ class _FoodItemDetailPageState extends State<FoodItemDetailPage> {
             finalItems.add(new cartModel.Cartitems(
                 fooditem: cartDataRes.cartitems[i].fooditem.id,
                 count: cartDataRes.cartitems[i].count,
-                price: cartDataRes.cartitems[i].fooditem.price,
+                price: cartDataRes.cartitems[i].fooditem.pricing
+                    .firstWhere((element) =>
+                        element.id == cartDataRes.cartitems[i].pricingId)
+                    .price,
                 restuarantId: cartDataRes.cartitems[i].fooditem.restaurant.id));
         }
       }

@@ -74,7 +74,11 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
                 fooditem: cartDataRes.cartitems[i].fooditem.id,
                 itemName: cartDataRes.cartitems[i].fooditem.name,
                 count: cartDataRes.cartitems[i].count,
-                itemPrice: cartDataRes.cartitems[i].fooditem.price));
+                pricing: cartDataRes.cartitems[i].fooditem.pricing[0].id,
+                itemPrice: cartDataRes.cartitems[i].fooditem.pricing
+                    .firstWhere((element) =>
+                        element.id == cartDataRes.cartitems[i].pricingId)
+                    .price));
         }
       }
       calculation();
@@ -477,7 +481,14 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
                                             (cartDataRes.cartitems[index]
                                                         .count *
                                                     cartDataRes.cartitems[index]
-                                                        .fooditem.price)
+                                                        .fooditem.pricing
+                                                        .firstWhere((element) =>
+                                                            element.id ==
+                                                            cartDataRes
+                                                                .cartitems[
+                                                                    index]
+                                                                .pricingId)
+                                                        .price)
                                                 .toString(),
                                         style: TextStyle(color: blackColor),
                                       )

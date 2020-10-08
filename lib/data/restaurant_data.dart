@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:Belly/models/cart_response_model.dart';
 import 'package:Belly/models/cart_upload_request_model.dart';
 import 'package:Belly/models/restaurant_detail_model.dart';
@@ -24,6 +25,7 @@ class RestaurantDataSource {
             restaurantList + '?lat=$lat&long=$long&category=$category', token)
         .then((dynamic res) async {
       List<dynamic> temp = res['results'];
+      print("data of res ${res['results'][1]}");
       print('${res['results'][0]} dddddddddddddddddddddddddddddddddd');
       restaurants = (temp).map((i) => RestaurantModel.fromJson(i)).toList();
 
@@ -63,6 +65,7 @@ class RestaurantDataSource {
             restaurantGuestList + "?lat=$lat&long=$long&category=$category")
         .then((dynamic res) async {
       List<dynamic> temp = res['results'];
+      print(res);
       restaurants = (temp).map((i) => RestaurantModel.fromJson(i)).toList();
       return restaurants;
     });
@@ -70,16 +73,22 @@ class RestaurantDataSource {
 
   Future<RestaurantDetailResponse> restaurantDetail(token, restaurantId) {
     String url = restaurantDetailUrl + "$restaurantId/";
+
     return _netUtil.getUserRestaurants(url, token).then((dynamic res) async {
+      print(res['single']);
+      log(res['single'].toString());
       RestaurantDetailResponse response =
           RestaurantDetailResponse.fromJson(res);
+
       return response;
     });
   }
 
   Future<ItemDetailResponse> foodItemDetail(token, itemId) {
     String url = foodItemDetailUrl + "$itemId/";
+    print("print Idem id $itemId");
     return _netUtil.getUserRestaurants(url, token).then((dynamic res) async {
+      log(res.toString());
       print('respons response of food item $res');
       ItemDetailResponse response = ItemDetailResponse.fromJson(res);
       return response;

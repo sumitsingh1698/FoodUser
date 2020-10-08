@@ -85,7 +85,11 @@ class _CartDetailPageState extends State<CartDetailPage> {
               finalItems.add(new cartModel.Cartitems(
                   fooditem: cartDataRes.cartitems[i].fooditem.id,
                   count: cartDataRes.cartitems[i].count,
-                  price: cartDataRes.cartitems[i].fooditem.price,
+                  price: cartDataRes.cartitems[i].fooditem.pricing
+                      .firstWhere((element) =>
+                          element.id == cartDataRes.cartitems[i].pricingId)
+                      .price,
+                  pricing: cartDataRes.cartitems[i].fooditem.pricing[0].id,
                   restuarantId:
                       cartDataRes.cartitems[i].fooditem.restaurant.id));
           }
@@ -297,7 +301,14 @@ class _CartDetailPageState extends State<CartDetailPage> {
                                                   ),
                                                   Text(
                                                     cartDataRes.cartitems[index]
-                                                        .fooditem.size,
+                                                        .fooditem.pricing
+                                                        .firstWhere((element) =>
+                                                            element.id ==
+                                                            cartDataRes
+                                                                .cartitems[
+                                                                    index]
+                                                                .pricingId)
+                                                        .size,
                                                     maxLines: 1,
                                                     softWrap: false,
                                                     overflow:
@@ -314,7 +325,14 @@ class _CartDetailPageState extends State<CartDetailPage> {
                                               Text(
                                                 "₹ " +
                                                     cartDataRes.cartitems[index]
-                                                        .fooditem.price
+                                                        .fooditem.pricing
+                                                        .firstWhere((element) =>
+                                                            element.id ==
+                                                            cartDataRes
+                                                                .cartitems[
+                                                                    index]
+                                                                .pricingId)
+                                                        .price
                                                         .toString(),
                                                 style: CustomFontStyle
                                                     .regularFormTextStyle(
@@ -374,6 +392,14 @@ class _CartDetailPageState extends State<CartDetailPage> {
                                                                       .cartitems[
                                                                           index]
                                                                       .fooditem
+                                                                      .pricing
+                                                                      .firstWhere((element) =>
+                                                                          element
+                                                                              .id ==
+                                                                          cartDataRes
+                                                                              .cartitems[
+                                                                                  index]
+                                                                              .pricingId)
                                                                       .price,
                                                                   cartDataRes
                                                                       .cartitems[
@@ -429,6 +455,14 @@ class _CartDetailPageState extends State<CartDetailPage> {
                                                                   .cartitems[
                                                                       index]
                                                                   .fooditem
+                                                                  .pricing
+                                                                  .firstWhere((element) =>
+                                                                      element
+                                                                          .id ==
+                                                                      cartDataRes
+                                                                          .cartitems[
+                                                                              index]
+                                                                          .pricingId)
                                                                   .price,
                                                               cartDataRes
                                                                   .cartitems[
@@ -483,7 +517,14 @@ class _CartDetailPageState extends State<CartDetailPage> {
                                                         .fooditem.id,
                                                     0,
                                                     cartDataRes.cartitems[index]
-                                                        .fooditem.price,
+                                                        .fooditem.pricing
+                                                        .firstWhere((element) =>
+                                                            element.id ==
+                                                            cartDataRes
+                                                                .cartitems[
+                                                                    index]
+                                                                .pricingId)
+                                                        .price,
                                                     cartDataRes
                                                         .cartitems[index]
                                                         .fooditem

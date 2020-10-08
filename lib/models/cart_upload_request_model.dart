@@ -1,3 +1,5 @@
+import 'package:Belly/models/restaurant_detail_model.dart';
+
 class ItemDetailResponse {
   List<Fooditem> fooditem;
   List<Cartitem> cartitem;
@@ -36,39 +38,41 @@ class Fooditem {
   String name;
   String shortDescription;
   String image;
-  double price;
   int totalQuantity;
   String type;
   String slug;
   String availStatus;
-  String size;
   int restaurant;
+  List<Pricing> pricing;
 
   Fooditem(
       {this.id,
-        this.name,
-        this.shortDescription,
-        this.image,
-        this.price,
-        this.totalQuantity,
-        this.type,
-        this.slug,
-        this.availStatus,
-        this.size,
-        this.restaurant});
+      this.name,
+      this.shortDescription,
+      this.image,
+      this.totalQuantity,
+      this.type,
+      this.slug,
+      this.availStatus,
+      this.restaurant,
+      this.pricing});
 
   Fooditem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     shortDescription = json['short_description'];
     image = json['image'];
-    price = json['price'];
     totalQuantity = json['total_quantity'];
     type = json['type'];
     slug = json['slug'];
     availStatus = json['avail_status'];
-    size = json['size'];
     restaurant = json['restaurant'];
+    if (json['pricing'] != null) {
+      pricing = new List<Pricing>();
+      json['pricing'].forEach((v) {
+        pricing.add(new Pricing.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -77,13 +81,14 @@ class Fooditem {
     data['name'] = this.name;
     data['short_description'] = this.shortDescription;
     data['image'] = this.image;
-    data['price'] = this.price;
     data['total_quantity'] = this.totalQuantity;
     data['type'] = this.type;
     data['slug'] = this.slug;
     data['avail_status'] = this.availStatus;
-    data['size'] = this.size;
     data['restaurant'] = this.restaurant;
+    if (this.pricing != null) {
+      data['pricing'] = this.pricing.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }

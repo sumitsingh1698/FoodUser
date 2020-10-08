@@ -1,9 +1,13 @@
+import 'dart:developer';
+import 'dart:math';
+
 import 'package:Belly/constants/String.dart';
 import 'package:Belly/data/add_to_cart.dart';
 import 'package:Belly/data/restaurant_data.dart';
 import 'package:Belly/models/cart_provider_class.dart';
 import 'package:Belly/models/cart_response_model.dart';
 import 'package:Belly/models/cart_upload_request_model.dart';
+import 'package:Belly/models/restaurant_detail_model.dart';
 import 'package:Belly/ui/screens/welcome_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +31,19 @@ class MenuCell extends StatefulWidget {
 
 class _MenuCellState extends State<MenuCell> {
   String selectedAdd;
+  int selectedPriceId;
+
+  @override
+  initState() {
+    super.initState();
+    selectedPriceId = null;
+  }
+
+  setSelectedUser(int pricingId) {
+    setState(() {
+      selectedPriceId = pricingId;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,34 +115,32 @@ class _MenuCellState extends State<MenuCell> {
                           Container(
                             width: MediaQuery.of(context).size.width * 0.35,
                             child: Text(
-                              "₹ " + widget.item.price.toString(),
+                              "₹ " + widget.item.pricing[0].price.toString(),
                               style: CustomFontStyle.regularFormTextStyle(
                                   blackColor),
                             ),
                           ),
-                          widget.slug == widget.item.slug
-                              ? AddRemoveCart(widget.item.id)
-                              : GestureDetector(
-                                  onTap: () {
-                                    widget.selectedAdd(widget.item.slug);
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left:
-                                            MediaQuery.of(context).size.width *
-                                                0.12),
-                                    child: Container(
-                                      height: 30,
-                                      width: 60,
-                                      color: cloudsColor,
-                                      child: Center(
-                                        child: Text(
-                                          'Add +',
-                                          style: TextStyle(fontSize: 15),
-                                        ),
-                                      ),
+                          GestureDetector(
+                              onTap: () {
+                                print("String");
+                                _buildPricingList(context, widget.item);
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    left: MediaQuery.of(context).size.width *
+                                        0.12),
+                                child: Container(
+                                  height: 30,
+                                  width: 60,
+                                  color: cloudsColor,
+                                  child: Center(
+                                    child: Text(
+                                      'Add +',
+                                      style: TextStyle(fontSize: 15),
                                     ),
-                                  )),
+                                  ),
+                                ),
+                              )),
                         ],
                       ),
                     ],
@@ -145,6 +160,64 @@ class _MenuCellState extends State<MenuCell> {
         ),
       ),
     ));
+  }
+
+  void _buildPricingList(context, Single single) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, mystate) {
+              return SingleChildScrollView(
+                child: Column(children: createRadioListUsers(single, mystate)),
+              );
+            },
+          );
+        });
+  }
+
+  List<Widget> createRadioListUsers(Single single, mystate) {
+    List<Widget> widgets = [];
+
+    widgets.add(Container(
+      padding: EdgeInsets.all(5.0),
+      child: Center(
+        child: Text(
+          "Select the Size",
+          style: TextStyle(fontSize: 20),
+        ),
+      ),
+    ));
+
+    for (Pricing price in single.pricing) {
+      widgets.add(
+        RadioListTile(
+          selected: price.id == selectedPriceId,
+          value: price.id,
+          groupValue: selectedPriceId,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Text(" ${price.size} "),
+              SizedBox(
+                width: 15,
+              ),
+              Text("${price.price}")
+            ],
+          ),
+          onChanged: (current) {
+            print("Current User $current");
+            setSelectedUser(current);
+
+            widget.selectedAdd(widget.item.slug);
+            mystate(() {});
+            print("${price.id} dd $current");
+          },
+          activeColor: Colors.green,
+        ),
+      );
+    }
+    return widgets;
   }
 }
 
@@ -244,8 +317,9 @@ class _MenuCellState extends State<MenuCell> {
 
 class AddRemoveCart extends StatefulWidget {
   final itemId;
+  final pricingId;
 
-  AddRemoveCart(this.itemId);
+  AddRemoveCart(this.itemId, this.pricingId);
 
   @override
   _AddRemoveCartState createState() => _AddRemoveCartState();
@@ -293,24 +367,37 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
     data = await _restaurantDataSource.foodItemDetail(token, widget.itemId);
     print('pppppllllllsssssssssssssssssgsgukggvkgvjyv');
     print('id of food item is');
+
     print(widget.itemId);
     int id = widget.itemId;
-    // print('foood itme price is ${data.cartitem[0].fooditem.price}');
+    // print('foood itme price is ${data.cartitem[0].fooditem}');
+    // print(data.cartitem.length);
+    // print(data.fooditem.length);
     setState(() {
       if (data.cartitem.length != 0) {
+        print(widget.pricingId.toString());
+        print("here");
         currentItem = new cartModel.Cartitems(
             fooditem: id,
             count: data.cartitem[0].count,
-            price: data.cartitem[0].fooditem.price,
+            price: (data.cartitem[0].fooditem.pricing
+                .firstWhere((element) => element.id == widget.pricingId)
+                .price),
+            pricing: widget.pricingId,
             restuarantId: data.cartitem[0].fooditem.restaurant);
       } else {
         currentItem = new cartModel.Cartitems(
             fooditem: id,
             count: 1,
-            price: data.fooditem[0].price,
+            price: widget.pricingId == null
+                ? data.fooditem[0].pricing[0].price
+                : (data.fooditem[0].pricing
+                    .firstWhere((element) => element.id == widget.pricingId)
+                    .price),
+            pricing: widget.pricingId,
             restuarantId: data.fooditem[0].restaurant);
         _addToCart(context, currentItem.fooditem, currentItem.count,
-            currentItem.price, currentItem.restuarantId);
+            currentItem.price, currentItem.restuarantId, widget.pricingId);
       }
       _countLoader = false;
       isLoading = false;
@@ -340,7 +427,11 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
             finalItems.add(new cartModel.Cartitems(
                 fooditem: cartDataRes.cartitems[i].fooditem.id,
                 count: cartDataRes.cartitems[i].count,
-                price: cartDataRes.cartitems[i].fooditem.price,
+                price: cartDataRes.cartitems[i].fooditem.pricing
+                    .firstWhere((element) =>
+                        element.id == cartDataRes.cartitems[i].pricingId)
+                    .price,
+                pricing: cartDataRes.cartitems[i].pricingId,
                 restuarantId: cartDataRes.cartitems[i].fooditem.restaurant.id));
         }
       }
@@ -426,8 +517,13 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
                   setState(() {
                     currentItem.count--;
                   });
-                  _addToCart(context, currentItem.fooditem, currentItem.count,
-                      currentItem.price, currentItem.restuarantId);
+                  _addToCart(
+                      context,
+                      currentItem.fooditem,
+                      currentItem.count,
+                      currentItem.price,
+                      currentItem.restuarantId,
+                      widget.pricingId);
                 },
               )
             : IconButton(
@@ -466,8 +562,13 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
               setState(() {
                 currentItem.count++;
               });
-              _addToCart(context, currentItem.fooditem, currentItem.count,
-                  currentItem.price, currentItem.restuarantId);
+              _addToCart(
+                  context,
+                  currentItem.fooditem,
+                  currentItem.count,
+                  currentItem.price,
+                  currentItem.restuarantId,
+                  widget.pricingId);
             }
           },
         ),
@@ -532,7 +633,7 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
   }
 
   _addToCart(BuildContext context, int id, int _count, double _price,
-      int _restaurantId) async {
+      int _restaurantId, int pricing) async {
     Widget optionYes = CupertinoDialogAction(
       child: Text(
         yes,
@@ -556,6 +657,7 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
           fooditem: id,
           count: _count,
           price: _price,
+          pricing: pricing,
           restuarantId: _restaurantId));
       setState(() {
         calculateTotalPrice();
@@ -612,6 +714,7 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
             fooditem: id,
             count: _count,
             price: _price,
+            pricing: pricing,
             restuarantId: _restaurantId));
       setState(() {
         calculateTotalPrice();

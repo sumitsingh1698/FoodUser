@@ -27,13 +27,16 @@ class CartUploadModel {
 class Cartitems {
   int fooditem;
   int count;
+  int pricing;
   double price;
   int restuarantId;
 
-  Cartitems({this.fooditem, this.count, this.price, this.restuarantId});
+  Cartitems(
+      {this.fooditem, this.pricing, this.count, this.price, this.restuarantId});
 
   Cartitems.fromJson(Map<String, dynamic> json) {
     fooditem = json['fooditem'];
+    pricing = json['pricing'];
     count = json['count'];
     price = json['price'];
     restuarantId = json['restuarantId'];
@@ -42,6 +45,7 @@ class Cartitems {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['fooditem'] = this.fooditem;
+    data['pricing'] = this.pricing;
     data['count'] = this.count;
     data['price'] = this.price;
     data['restuarantId'] = this.restuarantId;

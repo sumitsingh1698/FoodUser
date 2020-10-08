@@ -1,3 +1,5 @@
+import 'package:Belly/models/pricing.dart';
+
 class CartResponseModel {
   int user;
   double total;
@@ -51,8 +53,9 @@ class Cartitems {
   Fooditem fooditem;
   int count;
   int cart;
+  int pricingId;
 
-  Cartitems({this.id, this.fooditem, this.count, this.cart});
+  Cartitems({this.id, this.fooditem, this.count, this.cart, this.pricingId});
 
   Cartitems.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -61,6 +64,7 @@ class Cartitems {
         : null;
     count = json['count'];
     cart = json['cart'];
+    pricingId = json['pricing'];
   }
 
   Map<String, dynamic> toJson() {
@@ -71,6 +75,7 @@ class Cartitems {
     }
     data['count'] = this.count;
     data['cart'] = this.cart;
+    data['pricing'] = this.pricingId;
     return data;
   }
 }
@@ -81,12 +86,11 @@ class Fooditem {
   String name;
   String shortDescription;
   String image;
-  double price;
+  List<Pricing> pricing;
   int totalQuantity;
   String type;
   String slug;
   String availStatus;
-  String size;
   int tempCount = 0;
 
   Fooditem(
@@ -95,12 +99,11 @@ class Fooditem {
       this.name,
       this.shortDescription,
       this.image,
-      this.price,
       this.totalQuantity,
       this.type,
       this.slug,
       this.availStatus,
-      this.size});
+      this.pricing});
 
   Fooditem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -110,12 +113,16 @@ class Fooditem {
     name = json['name'];
     shortDescription = json['short_description'];
     image = json['image'];
-    price = json['price'];
     totalQuantity = json['total_quantity'];
     type = json['type'];
     slug = json['slug'];
     availStatus = json['avail_status'];
-    size = json['size'];
+    if (json['pricing'] != null) {
+      pricing = new List<Pricing>();
+      json['pricing'].forEach((v) {
+        pricing.add(new Pricing.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -127,12 +134,13 @@ class Fooditem {
     data['name'] = this.name;
     data['short_description'] = this.shortDescription;
     data['image'] = this.image;
-    data['price'] = this.price;
     data['total_quantity'] = this.totalQuantity;
     data['type'] = this.type;
     data['slug'] = this.slug;
     data['avail_status'] = this.availStatus;
-    data['size'] = this.size;
+    if (this.pricing != null) {
+      data['pricing'] = this.pricing.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }

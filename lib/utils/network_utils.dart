@@ -215,14 +215,17 @@ class NetworkUtil {
         url,
         headers: requestHeaders,
       );
+      print("$response token not null");
     } else
       response = await http.get(url);
     final int statusCode = response.statusCode;
+    print(response);
     if (statusCode < 200 || statusCode > 400 || json == null) {
+      print(response.body);
       throw new Exception("Error while fetching data");
     }
     final parsed = json.decode(utf8.decode(response.bodyBytes));
-    // print('parsed pardsed restDetails  $parsed ');
+    print('parsed pardsed restDetails  $parsed ');
     return parsed;
   }
 

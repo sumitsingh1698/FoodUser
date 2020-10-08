@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
@@ -11,9 +10,7 @@ import 'package:Belly/data/add_to_cart.dart';
 import 'package:Belly/data/restaurant_data.dart';
 import 'package:Belly/models/cart_provider_class.dart';
 import 'package:Belly/models/cart_response_model.dart';
-import 'package:Belly/ui/widgets/custom_close_app_bar.dart';
 import 'package:Belly/models/food_item_model.dart' as cartModel;
-import 'restaurant_detail_page.dart';
 import 'order_confirmation_page.dart';
 
 class CartBottomSheet extends StatefulWidget {
@@ -77,15 +74,24 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
       cartDataResponse = await _restaurantDataSource.cartDetails(token);
       if (cartDataResponse[0]) {
         print("Rwsults of Final Item is validd i GUESS");
+
         cartDataRes = cartDataResponse[1];
         finalItems.clear();
         if (cartDataRes.cartitems.length != 0) {
           for (int i = 0; i < cartDataRes.cartitems.length; i++) {
+            print("${cartDataRes.cartitems[i].pricingId} ddd");
+            if (cartDataRes.cartitems[i].pricingId == null)
+              cartDataRes.cartitems[i].pricingId = 1;
+
             if (cartDataRes.cartitems[i].fooditem != null)
               finalItems.add(new cartModel.Cartitems(
                   fooditem: cartDataRes.cartitems[i].fooditem.id,
                   count: cartDataRes.cartitems[i].count,
-                  price: cartDataRes.cartitems[i].fooditem.price,
+                  pricing: cartDataRes.cartitems[i].pricingId,
+                  price: cartDataRes.cartitems[i].fooditem.pricing
+                      .firstWhere((element) =>
+                          element.id == cartDataRes.cartitems[i].pricingId)
+                      .price,
                   restuarantId:
                       cartDataRes.cartitems[i].fooditem.restaurant.id));
           }
@@ -95,7 +101,7 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
       } else
         _cartProvider.itemCount = 0;
 
-      print(finalItems[0]);
+      // print(finalItems[0]);
       print('ssssssssssssssssssssuuuuuuuuuuccccccceeeeeeessssssss');
       setState(() {
         _isLoading = false;
@@ -288,7 +294,13 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                               ),
                                               Text(
                                                 cartDataRes.cartitems[index]
-                                                    .fooditem.size,
+                                                    .fooditem.pricing
+                                                    .firstWhere((element) =>
+                                                        element.id ==
+                                                        cartDataRes
+                                                            .cartitems[index]
+                                                            .pricingId)
+                                                    .size,
                                                 maxLines: 1,
                                                 softWrap: false,
                                                 overflow: TextOverflow.ellipsis,
@@ -304,7 +316,13 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                           Text(
                                             "₹ " +
                                                 cartDataRes.cartitems[index]
-                                                    .fooditem.price
+                                                    .fooditem.pricing
+                                                    .firstWhere((element) =>
+                                                        element.id ==
+                                                        cartDataRes
+                                                            .cartitems[index]
+                                                            .pricingId)
+                                                    .price
                                                     .toString(),
                                             style: CustomFontStyle
                                                 .regularFormTextStyle(
@@ -364,13 +382,25 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                                                   .cartitems[
                                                                       index]
                                                                   .fooditem
+                                                                  .pricing
+                                                                  .firstWhere((element) =>
+                                                                      element
+                                                                          .id ==
+                                                                      cartDataRes
+                                                                          .cartitems[
+                                                                              index]
+                                                                          .pricingId)
                                                                   .price,
                                                               cartDataRes
                                                                   .cartitems[
                                                                       index]
                                                                   .fooditem
                                                                   .restaurant
-                                                                  .id);
+                                                                  .id,
+                                                              cartDataRes
+                                                                  .cartitems[
+                                                                      index]
+                                                                  .pricingId);
                                                         },
                                                         child: Icon(
                                                           Icons.remove,
@@ -415,12 +445,22 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                                           cartDataRes
                                                               .cartitems[index]
                                                               .fooditem
+                                                              .pricing
+                                                              .firstWhere((element) =>
+                                                                  element.id ==
+                                                                  cartDataRes
+                                                                      .cartitems[
+                                                                          index]
+                                                                      .pricingId)
                                                               .price,
                                                           cartDataRes
                                                               .cartitems[index]
                                                               .fooditem
                                                               .restaurant
-                                                              .id);
+                                                              .id,
+                                                          cartDataRes
+                                                              .cartitems[index]
+                                                              .pricingId);
                                                     },
                                                     child: Icon(
                                                       Icons.add,
@@ -450,9 +490,17 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                                     .fooditem.id,
                                                 0,
                                                 cartDataRes.cartitems[index]
-                                                    .fooditem.price,
+                                                    .fooditem.pricing
+                                                    .firstWhere((element) =>
+                                                        element.id ==
+                                                        cartDataRes
+                                                            .cartitems[index]
+                                                            .pricingId)
+                                                    .price,
                                                 cartDataRes.cartitems[index]
-                                                    .fooditem.restaurant.id);
+                                                    .fooditem.restaurant.id,
+                                                cartDataRes.cartitems[index]
+                                                    .pricingId);
                                           },
                                         ),
                                       ],
@@ -500,13 +548,14 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
   }
 
   _addToCart(BuildContext context, int id, int _count, double _price,
-      int _restaurantId) async {
+      int _restaurantId, int pricingId) async {
     bool lastOne = false;
     if (finalItems.length == 0) {
       finalItems.add(new cartModel.Cartitems(
           fooditem: id,
           count: _count,
           price: _price,
+          pricing: pricingId,
           restuarantId: _restaurantId));
 
       calculateTotalPrice();
@@ -531,6 +580,7 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
             fooditem: id,
             count: _count,
             price: _price,
+            pricing: pricingId,
             restuarantId: _restaurantId));
 
       calculateTotalPrice();

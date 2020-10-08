@@ -176,67 +176,160 @@ class Campus {
 
 class Single {
   int id;
+  int restaurant;
   String name;
   String shortDescription;
   String image;
-  double price;
+  String diet;
+  List<Pricing> pricing;
   int totalQuantity;
   String type;
   String slug;
   String availStatus;
-  String size;
-  int restaurant;
   String category;
-  String diet;
+
   Single(
       {this.id,
+      this.restaurant,
       this.name,
       this.shortDescription,
       this.image,
-      this.price,
+      this.diet,
+      this.pricing,
       this.totalQuantity,
       this.type,
       this.slug,
       this.availStatus,
-      this.size,
-      this.restaurant,
-      this.category,
-      this.diet});
+      this.category});
 
   Single.fromJson(Map<String, dynamic> json) {
-    diet = json['diet'];
     id = json['id'];
+    restaurant = json['restaurant'];
     name = json['name'];
     shortDescription = json['short_description'];
     image = json['image'];
-    price = json['price'];
+    diet = json['diet'];
+    if (json['pricing'] != null) {
+      pricing = new List<Pricing>();
+      json['pricing'].forEach((v) {
+        pricing.add(new Pricing.fromJson(v));
+      });
+    }
     totalQuantity = json['total_quantity'];
     type = json['type'];
     slug = json['slug'];
     availStatus = json['avail_status'];
-    size = json['size'];
-    restaurant = json['restaurant'];
     category = json['food_category'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
+    data['restaurant'] = this.restaurant;
     data['name'] = this.name;
     data['short_description'] = this.shortDescription;
     data['image'] = this.image;
-    data['price'] = this.price;
+    data['diet'] = this.diet;
+    if (this.pricing != null) {
+      data['pricing'] = this.pricing.map((v) => v.toJson()).toList();
+    }
     data['total_quantity'] = this.totalQuantity;
     data['type'] = this.type;
     data['slug'] = this.slug;
     data['avail_status'] = this.availStatus;
-    data['size'] = this.size;
-    data['restaurant'] = this.restaurant;
     data['food_category'] = this.category;
-    data['diet'] = this.diet;
     return data;
   }
 }
+
+class Pricing {
+  int id;
+  String size;
+  int totalQuantity;
+  double price;
+
+  Pricing({this.id, this.size, this.totalQuantity, this.price});
+
+  Pricing.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    size = json['size'];
+    totalQuantity = json['total_quantity'];
+    price = json['price'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['size'] = this.size;
+    data['total_quantity'] = this.totalQuantity;
+    data['price'] = this.price;
+    return data;
+  }
+}
+
+// class Single {
+//   int id;
+//   String name;
+//   String shortDescription;
+//   String image;
+//   double price;
+//   int totalQuantity;
+//   String type;
+//   String slug;
+//   String availStatus;
+//   String size;
+//   int restaurant;
+//   String category;
+//   String diet;
+//   Single(
+//       {this.id,
+//       this.name,
+//       this.shortDescription,
+//       this.image,
+//       this.price,
+//       this.totalQuantity,
+//       this.type,
+//       this.slug,
+//       this.availStatus,
+//       this.size,
+//       this.restaurant,
+//       this.category,
+//       this.diet});
+
+//   Single.fromJson(Map<String, dynamic> json) {
+//     diet = json['diet'];
+//     id = json['id'];
+//     name = json['name'];
+//     shortDescription = json['short_description'];
+//     image = json['image'];
+//     price = json['price'];
+//     totalQuantity = json['total_quantity'];
+//     type = json['type'];
+//     slug = json['slug'];
+//     availStatus = json['avail_status'];
+//     size = json['size'];
+//     restaurant = json['restaurant'];
+//     category = json['food_category'];
+//   }
+
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['id'] = this.id;
+//     data['name'] = this.name;
+//     data['short_description'] = this.shortDescription;
+//     data['image'] = this.image;
+//     data['price'] = this.price;
+//     data['total_quantity'] = this.totalQuantity;
+//     data['type'] = this.type;
+//     data['slug'] = this.slug;
+//     data['avail_status'] = this.availStatus;
+//     data['size'] = this.size;
+//     data['restaurant'] = this.restaurant;
+//     data['food_category'] = this.category;
+//     data['diet'] = this.diet;
+//     return data;
+//   }
+// }
 
 class Set {
   int id;
@@ -256,12 +349,12 @@ class Set {
       this.name,
       this.shortDescription,
       this.image,
-      this.price,
+      // this.price,
       this.totalQuantity,
       this.type,
       this.slug,
       this.availStatus,
-      this.size,
+      // this.size,
       this.restaurant});
 
   Set.fromJson(Map<String, dynamic> json) {
@@ -269,12 +362,12 @@ class Set {
     name = json['name'];
     shortDescription = json['short_description'];
     image = json['image'];
-    price = json['price'];
+    // price = json['price'];
     totalQuantity = json['total_quantity'];
     type = json['type'];
     slug = json['slug'];
     availStatus = json['avail_status'];
-    size = json['size'];
+    // size = json['size'];
     restaurant = json['restaurant'];
   }
 
@@ -284,12 +377,12 @@ class Set {
     data['name'] = this.name;
     data['short_description'] = this.shortDescription;
     data['image'] = this.image;
-    data['price'] = this.price;
+    // data['price'] = this.price;
     data['total_quantity'] = this.totalQuantity;
     data['type'] = this.type;
     data['slug'] = this.slug;
     data['avail_status'] = this.availStatus;
-    data['size'] = this.size;
+    // data['size'] = this.size;
     data['restaurant'] = this.restaurant;
     return data;
   }

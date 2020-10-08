@@ -10,6 +10,7 @@ class OrderRequestModel {
   String minCharge;
   String maxCharge;
   String minCart;
+
   OrderRequestModel(
       this.restaurant,
       this.grandtotal,
@@ -63,14 +64,17 @@ class IoId {
   int fooditem;
   String itemName;
   double itemPrice;
+  int pricing;
   int count;
 
-  IoId({this.fooditem, this.itemName, this.itemPrice, this.count});
+  IoId(
+      {this.fooditem, this.itemName, this.itemPrice, this.count, this.pricing});
 
   IoId.fromJson(Map<String, dynamic> json) {
     fooditem = json['fooditem'];
     itemName = json['item_name'];
     itemPrice = json['item_price'];
+    pricing = json['pricing'];
     count = json['count'];
   }
 
@@ -80,6 +84,7 @@ class IoId {
     data['item_name'] = this.itemName;
     data['item_price'] = this.itemPrice;
     data['count'] = this.count;
+    data['pricing'] = this.pricing;
     return data;
   }
 }
