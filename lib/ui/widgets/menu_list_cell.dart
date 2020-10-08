@@ -36,7 +36,7 @@ class _MenuCellState extends State<MenuCell> {
   @override
   initState() {
     super.initState();
-    selectedPriceId = null;
+    // selectedPriceId = widget.item.pricing[0].id;
   }
 
   setSelectedUser(int pricingId) {
@@ -163,6 +163,7 @@ class _MenuCellState extends State<MenuCell> {
   }
 
   void _buildPricingList(context, Single single) {
+    selectedPriceId = null;
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -179,15 +180,15 @@ class _MenuCellState extends State<MenuCell> {
   List<Widget> createRadioListUsers(Single single, mystate) {
     List<Widget> widgets = [];
 
-    widgets.add(Container(
-      padding: EdgeInsets.all(5.0),
-      child: Center(
-        child: Text(
-          "Select the Size",
-          style: TextStyle(fontSize: 20),
-        ),
-      ),
-    ));
+    // widgets.add(Container(
+    //   padding: EdgeInsets.all(5.0),
+    //   child: Center(
+    //     child: Text(
+    //       "Select the Size",
+    //       style: TextStyle(fontSize: 20),
+    //     ),
+    //   ),
+    // ));
 
     for (Pricing price in single.pricing) {
       widgets.add(
@@ -217,6 +218,11 @@ class _MenuCellState extends State<MenuCell> {
         ),
       );
     }
+    selectedPriceId != null
+        ? widgets.add(Container(
+            padding: EdgeInsets.all(10.0),
+            child: AddRemoveCart(single.id, selectedPriceId)))
+        : Container();
     return widgets;
   }
 }
@@ -488,14 +494,21 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
   Widget build(BuildContext context) {
     _cartProvider = Provider.of<CartModel>(context, listen: false);
     return (isLoading)
-        ? Padding(
-            padding:
-                EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.2),
-            child: Container(
-              height: 15,
-              width: 15,
-              child: CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(greenBellyColor),
+        ? Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.2),
+              child: Center(
+                child: Container(
+                  height: 20,
+                  width: 15,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      valueColor:
+                          new AlwaysStoppedAnimation<Color>(greenBellyColor),
+                    ),
+                  ),
+                ),
               ),
             ),
           )
@@ -701,7 +714,7 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
       }
       bool itemExist = false;
       for (var i = 0; i < finalItems.length; i++) {
-        if (finalItems[i].fooditem == id) {
+        if (finalItems[i].fooditem == id && finalItems[i].pricing == pricing) {
           itemExist = true;
           if (_count != 0)
             finalItems[i].count = _count;
