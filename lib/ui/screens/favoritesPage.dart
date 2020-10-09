@@ -315,12 +315,11 @@ class _RestaurantCellFavoritesState extends State<RestaurantCellFavorites> {
         ],
       ),
       onTap: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //       builder: (context) => RestaurantDetailPage(
-        //           widget.restaurant.id, widget.restaurant)),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => RestaurantDetailPage(widget.restaurant.id)),
+        );
       },
     ));
   }
