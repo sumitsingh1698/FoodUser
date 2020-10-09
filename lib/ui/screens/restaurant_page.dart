@@ -12,13 +12,13 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:Belly/constants/Color.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:Belly/data/restaurant_data.dart';
 import 'package:Belly/models/restaurant_model.dart';
 import 'package:Belly/ui/screens/restaurant_detail_page.dart';
 import 'package:Belly/ui/widgets/location_custom_app_bar.dart';
 import 'package:Belly/utils/app_config.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RestaurantPage extends StatefulWidget {
   final Function(int) offerpage;
@@ -36,6 +36,9 @@ class _RestaurantPageState extends State<RestaurantPage> {
   bool isGuest = false;
   List<RestaurantModel> restaurant = [];
   static final _key1 = new GlobalKey<ScaffoldState>();
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
   List<List<Color>> colors = [
     [
       Color(0xFF0ba360),
@@ -242,6 +245,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
     setState(() {
       restaurant = data;
       isLoading = false;
+      print("All Refresh Done");
     });
   }
 
@@ -311,12 +315,68 @@ class _RestaurantPageState extends State<RestaurantPage> {
                       )
                     ];
                   },
-                  body: ListView(
-                    children: <Widget>[
-                      _buildRestaurantList(context),
-                    ],
+                  body: SmartRefresher(
+                    enablePullDown: true,
+                    enablePullUp: true,
+                    header: WaterDropHeader(),
+                    footer: CustomFooter(
+                      builder: (BuildContext context, LoadStatus mode) {
+                        Widget body;
+                        if (mode == LoadStatus.idle) {
+                          body = Text("pull up load");
+                        } else if (mode == LoadStatus.loading) {
+                          body = CupertinoActivityIndicator();
+                        } else if (mode == LoadStatus.failed) {
+                          body = Text("Load Failed!Click retry!");
+                        } else if (mode == LoadStatus.canLoading) {
+                          body = Text("release to load more");
+                        } else {
+                          body = Text("No more Data");
+                        }
+                        return Container(
+                          height: 55.0,
+                          child: Center(child: body),
+                        );
+                      },
+                    ),
+                    controller: _refreshController,
+                    onRefresh: _onRefresh,
+                    onLoading: _onLoading,
+                    child: ListView(
+                      children: <Widget>[
+                        _buildRestaurantList(context),
+                      ],
+                    ),
                   ))),
     );
+  }
+
+  void _onRefresh() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      await getSharedPrefs().then((_) {
+        _refreshController.refreshCompleted();
+      });
+    } catch (e) {
+      _refreshController.refreshFailed();
+    }
+
+    // if failed,use refreshFailed()
+  }
+
+  void _onLoading() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    // items.add((items.length + 1).toString());
+    print("hello");
+    if (mounted) setState(() {});
+    _refreshController.loadComplete();
   }
 
   Widget _buildRestaurantList(context) {
