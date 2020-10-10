@@ -69,7 +69,8 @@ class _MenuCellState extends State<MenuCell> {
                     height: 100,
                     width: 90,
                     child: CachedNetworkImage(
-                      imageUrl: widget.item.image,
+                      imageUrl:
+                          widget.item.image != null ? widget.item.image : "",
                       errorWidget: (context, url, error) =>
                           new Icon(Icons.error),
                       fit: BoxFit.fill,

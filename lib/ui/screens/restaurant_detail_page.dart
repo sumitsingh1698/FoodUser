@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:Belly/models/cart_upload_request_model.dart';
 import 'package:Belly/ui/screens/cartbottomsheet.dart';
 import 'package:Belly/ui/screens/food_searchPage.dart';
@@ -61,7 +63,7 @@ class _RestaurantDetailPage extends State<RestaurantDetailPage> {
   void getData() async {
     data = await _restaurantDataSource.restaurantDetail(
         token, widget.restaurantId);
-    print(data);
+    log(data.toString());
     print('caaaaatttttttttteeeeeeeeeeeggggggoryyyyy');
     data.single.forEach((e) {
       if (!tabheading.contains(e.category)) {
