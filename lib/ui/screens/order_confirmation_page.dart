@@ -343,13 +343,14 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
                         setState(() {
                           coupon = copn;
                         });
-                        print('coupon restaurant ${coupon.restaurant}');
-                        print(
-                            'coupon restaurant ${cartDataRes.cartitems[0].fooditem.restaurant.id}');
-                        if (coupon.restaurant == 0 ||
-                            coupon.restaurant ==
-                                cartDataRes
-                                    .cartitems[0].fooditem.restaurant.id) {
+                        // print('coupon restaurant ${coupon.restaurant}');
+                        // print(
+                        //     'coupon restaurant ${cartDataRes.cartitems[0].fooditem.restaurant.id}');
+                        if (copn != null &&
+                            (copn.isGlobal ||
+                                coupon.restaurant ==
+                                    cartDataRes
+                                        .cartitems[0].fooditem.restaurant.id)) {
                           if (discountRes >= coupon.mincartvalue &&
                               copn != null) {
                             print('is percentage ${coupon.ispercentage}');
@@ -371,6 +372,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
                               });
                             }
                             calculation();
+                            Utils.showSnackBar(_key, "Successfully Applied");
                             print('ddddddedduccctiion   $deduction');
                           }
                         } else {

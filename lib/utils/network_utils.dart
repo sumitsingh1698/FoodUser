@@ -227,7 +227,7 @@ class NetworkUtil {
       throw new Exception("Error while fetching data");
     }
     final parsed = json.decode(utf8.decode(response.bodyBytes));
-    print('parsed pardsed restDetails  $parsed ');
+    log('parsed pardsed restDetails  $parsed ');
     return parsed;
   }
 

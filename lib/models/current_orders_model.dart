@@ -41,7 +41,7 @@ class CurrentOrderModel {
     grandtotal = json['grandtotal'];
     status = json['status'];
     paymentMethod = json['payment_method'];
-    subtotal = json['subtotal'];
+    subtotal = double.parse(json['subtotal'].toString());
     restaurantAddress = json['restaurant_address'];
     restaurantImage = json['restaurant_image'];
     restaurantName = json['restaurant_name'];

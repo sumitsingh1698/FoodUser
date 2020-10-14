@@ -1,3 +1,5 @@
+import 'package:Belly/constants/Color.dart';
+import 'package:Belly/constants/Style.dart';
 import 'package:Belly/models/offerModel.dart';
 import 'package:Belly/presentation/custom_icons_icons.dart';
 import 'package:Belly/ui/widgets/custom_close_app_bar.dart';
@@ -131,12 +133,20 @@ class _OfferSelectState extends State<OfferSelect> {
   Widget couponlist() {
     return loading
         ? CupertinoActivityIndicator()
-        : ListView.builder(
-            shrinkWrap: true,
-            itemCount: offers.length,
-            itemBuilder: (context, index) {
-              return couponBox(offers[index]);
-            });
+        : offers.length == 0
+            ? Container(
+                child: Center(
+                    child: Text(
+                  "No Offer Found",
+                  style: CustomFontStyle.RegularTextStyle(grey1Color),
+                )),
+              )
+            : ListView.builder(
+                shrinkWrap: true,
+                itemCount: offers.length,
+                itemBuilder: (context, index) {
+                  return couponBox(offers[index]);
+                });
   }
 
   Widget couponBox(OfferModel searchcoupon) {

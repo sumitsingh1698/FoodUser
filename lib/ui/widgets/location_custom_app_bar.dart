@@ -67,36 +67,39 @@ class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   "AIzaSyDHBgQ2en98quh7noD9v_Q9cfEqNPV9sxs",
                                   // displayLocation: LatLng(10.139429, 76.464556),
                                 )));
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    print('hurrrraaaaaaaaaayyyyyyyy$result');
-                    prefs.setDouble('lat', result.latLng.latitude);
-                    prefs.setDouble('long', result.latLng.longitude);
-                    prefs.setString('locality', result.name);
-                    print(result.latLng);
+                    if (result != null) {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      print('hurrrraaaaaaaaaayyyyyyyy$result');
 
-                    print(
-                        "address : ${result.name} | ${result.locality} | ${result.city} | ${result.zip} | ${result.latLng.latitude} | ${result.latLng.longitude}");
-                    locUpdate();
-                    final token = prefs.getString('token');
-                    result.locality =
-                        result.locality == null ? "" : result.locality;
+                      prefs.setDouble('lat', result.latLng.latitude);
+                      prefs.setDouble('long', result.latLng.longitude);
+                      prefs.setString('locality', result.name);
+                      print(result.latLng);
 
-                    AddressBook address = AddressBook(
-                      result.name,
-                      result.locality,
-                      result.city,
-                      result.zip,
-                      result.latLng.latitude.toString(),
-                      result.latLng.longitude.toString(),
-                    );
+                      print(
+                          "address : ${result.name} | ${result.locality} | ${result.city} | ${result.zip} | ${result.latLng.latitude} | ${result.latLng.longitude}");
+                      locUpdate();
+                      final token = prefs.getString('token');
+                      result.locality =
+                          result.locality == null ? "" : result.locality;
 
-                    print("address ${address.toJson().toString()}");
-                    final response =
-                        await _addressDataSource.postAddress(token, address);
-                    print('adresss saved');
-                    prefs.setInt('addressId', response['id']);
-                    print(response);
+                      AddressBook address = AddressBook(
+                        result.name,
+                        result.locality,
+                        result.city,
+                        result.zip,
+                        result.latLng.latitude.toString(),
+                        result.latLng.longitude.toString(),
+                      );
+
+                      print("address ${address.toJson().toString()}");
+                      final response =
+                          await _addressDataSource.postAddress(token, address);
+                      print('adresss saved');
+                      prefs.setInt('addressId', response['id']);
+                      print(response);
+                    }
                   },
                   child: Icon(Icons.location_on)),
               Container(

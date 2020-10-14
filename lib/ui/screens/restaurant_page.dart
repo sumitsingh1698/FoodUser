@@ -192,6 +192,8 @@ class _RestaurantPageState extends State<RestaurantPage> {
       // lat = 10.139429;
       // long = 76.464556;
       // locality = 'ekm';
+      print("here");
+
       print('ssssssssssssssssssssssssssssssssssssssssss');
       LocationResult result =
           await Navigator.of(context).push(MaterialPageRoute(
@@ -226,16 +228,17 @@ class _RestaurantPageState extends State<RestaurantPage> {
         long = result.latLng.longitude;
         locality = result.name;
       });
+    } else {
+      if (isGuest)
+        data = await _restaurantDataSource.getGuestRestaurants(
+            "$lat", "$long", '');
+      else
+        data = await _restaurantDataSource.getUserRestaurants(
+            token, "$lat", "$long", '');
+
+      print('ssssssssdaaaffafaaaggaga');
     }
 
-    if (isGuest)
-      data =
-          await _restaurantDataSource.getGuestRestaurants("$lat", "$long", '');
-    else
-      data = await _restaurantDataSource.getUserRestaurants(
-          token, "$lat", "$long", '');
-
-    print('ssssssssdaaaffafaaaggaga');
     print("$lat hhhh hhhh  hh $long");
     category = [];
     data.forEach((e) {
@@ -383,97 +386,95 @@ class _RestaurantPageState extends State<RestaurantPage> {
 
   Widget _buildRestaurantList(context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Container(
-            height: 100,
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      left: 4.0,
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+              height: 100,
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 4,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        left: 4.0,
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          // if (restaurant.length < data.length) {
+                          //   setState(() {
+                          //     restaurant = data;
+                          //   });
+                          // } else {
+                          sort(index);
+                          // }
+                        },
+                        child: Container(
+                            height: 100,
+                            width: 100,
+                            child: Image.asset(
+                              images[index],
+                              fit: BoxFit.fill,
+                            )),
+                      ),
+                    );
+                  })),
+          Container(
+            child: GridView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  childAspectRatio: 80 / 30, crossAxisCount: 3),
+              itemBuilder: (_, index) => Padding(
+                padding: EdgeInsets.all(2),
+                child: GestureDetector(
+                  onTap: () {
+                    sortCategory(category[index]);
+                  },
+                  child: Container(
+                    // height: 50,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: colors[index])),
+                    child: Center(
+                      child: Text(category[index],
+                          textAlign: TextAlign.center,
+                          style: CustomFontStyle.RegularTextStyle(
+                              whiteBellyColor)),
                     ),
-                    child: GestureDetector(
-                      onTap: () {
-                        // if (restaurant.length < data.length) {
-                        //   setState(() {
-                        //     restaurant = data;
-                        //   });
-                        // } else {
-                        sort(index);
-                        // }
-                      },
-                      child: Container(
-                          height: 100,
-                          width: 100,
-                          child: Image.asset(
-                            images[index],
-                            fit: BoxFit.fill,
-                          )),
-                    ),
-                  );
-                })),
-        Container(
-          child: GridView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                childAspectRatio: 80 / 30, crossAxisCount: 3),
-            itemBuilder: (_, index) => Padding(
-              padding: EdgeInsets.all(2),
-              child: GestureDetector(
-                onTap: () {
-                  sortCategory(category[index]);
-                },
-                child: Container(
-                  // height: 50,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: colors[index])),
-                  child: Center(
-                    child: Text(category[index],
-                        textAlign: TextAlign.center,
-                        style:
-                            CustomFontStyle.RegularTextStyle(whiteBellyColor)),
                   ),
                 ),
               ),
+              itemCount: category.length,
             ),
-            itemCount: category.length,
           ),
-        ),
-        restaurant.length != 0
-            ? Container(
-                child: ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: restaurant.length,
-                  shrinkWrap: true,
-                  itemBuilder: (BuildContext context, int index) {
-                    return new Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
-                        child: Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero),
-                            elevation: 2,
-                            child:
-                                RestaurantCell(restaurant[index], snackbar)));
-                  },
-                ),
-              )
-            : Container(
-                child: Center(
-                  child: Text("No Restaurant Found"),
-                ),
-              )
-      ],
-    );
+          restaurant.length != 0
+              ? Container(
+                  child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: restaurant.length,
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      return new Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 5.0, horizontal: 10),
+                          child: Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.zero),
+                              elevation: 2,
+                              child:
+                                  RestaurantCell(restaurant[index], snackbar)));
+                    },
+                  ),
+                )
+              : Container(
+                  height: 250.0,
+                  child: Center(child: Text("No Restaurant Found")),
+                )
+        ]);
   }
 
   void snackbar() {

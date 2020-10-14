@@ -8,6 +8,7 @@ import 'package:Belly/models/cart_provider_class.dart';
 import 'package:Belly/models/cart_response_model.dart';
 import 'package:Belly/models/cart_upload_request_model.dart';
 import 'package:Belly/models/restaurant_detail_model.dart';
+import 'package:Belly/ui/screens/login_page.dart';
 import 'package:Belly/ui/screens/welcome_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -314,9 +315,16 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
     var loggedIn = prefs.getBool("loggedIn").toString();
     if (loggedIn == 'null' || loggedIn == 'false') {
       isGuest = true;
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
     } else {
+      print("here in add product");
       token = prefs.getString('token');
-      await getCurrentCartData();
+      if (token == null || token == '') {
+      } else {
+        await getCurrentCartData();
+      }
     }
     // getData();
   }

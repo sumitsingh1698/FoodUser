@@ -7,9 +7,10 @@ class OfferModel {
   bool ispercentage;
   double discount;
   String code;
+  bool isGlobal;
 
   OfferModel(this.id, this.restaurant, this.description, this.mincartvalue,
-      this.ispercentage, this.code);
+      this.ispercentage, this.code, this.isGlobal);
 
   OfferModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -24,6 +25,7 @@ class OfferModel {
     discount = json['discount_percentage'];
     ispercentage = json['is_percentage'];
     code = json['code'];
+    isGlobal = json['is_global'];
   }
 
   Map<String, dynamic> toJson() {
@@ -35,6 +37,7 @@ class OfferModel {
     data['max_discount_amount'] = this.maxdiscountvalue;
     data['is_percentage'] = this.ispercentage;
     data['discount_percentage'] = this.discount;
+    data['is_global'] = this.isGlobal;
     return data;
   }
 }

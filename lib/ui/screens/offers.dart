@@ -2,6 +2,7 @@ import 'package:Belly/data/restaurant_data.dart';
 import 'package:Belly/models/offerModel.dart';
 import 'package:Belly/models/restaurant_model.dart';
 import 'package:Belly/presentation/custom_icons_icons.dart';
+import 'package:Belly/ui/screens/addressPage.dart';
 import 'package:Belly/ui/screens/restaurant_page.dart';
 import 'package:Belly/ui/widgets/custom_close_app_bar.dart';
 import 'package:Belly/utils/base_url.dart';
@@ -9,6 +10,7 @@ import 'package:Belly/utils/network_utils.dart';
 import 'package:Belly/utils/show_snackbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OffersPage extends StatefulWidget {
@@ -73,14 +75,15 @@ class _OffersPageState extends State<OffersPage> {
       print('ssssssssssssssssssssssssssssssssssssssssss');
 
       // final token = prefs.getString('token');
+    } else {
+      if (isGuest)
+        data = await _restaurantDataSource.getGuestRestaurants(
+            "$lat", "$long", '');
+      else
+        data = await _restaurantDataSource.getUserRestaurants(
+            token, "$lat", "$long", '');
     }
 
-    if (isGuest)
-      data =
-          await _restaurantDataSource.getGuestRestaurants("$lat", "$long", '');
-    else
-      data = await _restaurantDataSource.getUserRestaurants(
-          token, "$lat", "$long", '');
     setState(() {
       isLoading = false;
     });
@@ -98,16 +101,18 @@ class _OffersPageState extends State<OffersPage> {
           ? Center(child: Text('Please Login :)'))
           : isLoading
               ? Center(child: CupertinoActivityIndicator())
-              : ListView.builder(
-                  itemCount: data.length,
-                  itemBuilder: (context, index) {
-                    return data[index].discount != 0
-                        ? Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: RestaurantCell(data[index], snackbar),
-                          )
-                        : SizedBox.shrink();
-                  }),
+              : data.length == 0
+                  ? Center(child: Text("No Offer"))
+                  : ListView.builder(
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        return data[index].discount != 0
+                            ? Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: RestaurantCell(data[index], snackbar),
+                              )
+                            : SizedBox.shrink();
+                      }),
     );
   }
 
