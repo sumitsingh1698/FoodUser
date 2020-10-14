@@ -24,9 +24,11 @@ class RestaurantDataSource {
         .getUserRestaurants(
             restaurantList + '?lat=$lat&long=$long&category=$category', token)
         .then((dynamic res) async {
+      log("Response of getUserRestaurants $res");
       List<dynamic> temp = res['results'];
-      print("data of res ${res['results'][1]}");
-      print('${res['results'][0]} dddddddddddddddddddddddddddddddddd');
+
+      // print("data of res ${res['results'][1]}");
+      // print('${res['results'][0]} dddddddddddddddddddddddddddddddddd');
       restaurants = (temp).map((i) => RestaurantModel.fromJson(i)).toList();
 
       return restaurants;
@@ -87,6 +89,7 @@ class RestaurantDataSource {
   Future<ItemDetailResponse> foodItemDetail(token, itemId) {
     String url = foodItemDetailUrl + "$itemId/";
     print("print Idem id $itemId");
+
     return _netUtil.getUserRestaurants(url, token).then((dynamic res) async {
       log(res.toString());
       print('respons response of food item $res');

@@ -66,6 +66,7 @@ class Restaurant {
   double pricemax;
   String preperationtime;
   double discount;
+  String fssai;
 
   Restaurant(
       {this.name,
@@ -82,7 +83,8 @@ class Restaurant {
       this.preperationtime,
       this.pricemax,
       this.pricemin,
-      this.discount});
+      this.discount,
+      this.fssai});
 
   Restaurant.fromJson(Map<String, dynamic> json) {
     name = json['name'];
@@ -103,6 +105,7 @@ class Restaurant {
     pricemin = json['price_min'];
     pricemax = json['price_max'];
     discount = json['discounted_percentage'];
+    fssai = json['fssai'];
   }
 
   Map<String, dynamic> toJson() {
@@ -126,6 +129,7 @@ class Restaurant {
     data['preparation_time'] = this.preperationtime;
     data['avg_rating'] = this.rating;
     data['discounted_percentage'] = this.rating;
+    data['fssai'] = this.fssai;
     return data;
   }
 }
@@ -250,7 +254,7 @@ class Pricing {
 
   Pricing({this.id, this.size, this.totalQuantity, this.price});
 
-  Pricing.fromJson(Map<String, dynamic> json) {
+  Pricing.fromJson(dynamic json) {
     id = json['id'];
     size = json['size'];
     totalQuantity = json['total_quantity'];

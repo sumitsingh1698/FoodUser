@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:http/http.dart' as http;
 
 class NetworkUtil {
@@ -110,6 +111,7 @@ class NetworkUtil {
     };
     var response = await http.post(url, headers: requestHeaders, body: _body);
     final int statusCode = response.statusCode;
+    log("response of postAddress ${response.body.toString()}");
     if (statusCode < 200 || statusCode > 400 || json == null) {
       throw new Exception("Error while posting data postAddress");
     }

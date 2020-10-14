@@ -74,8 +74,14 @@ class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     prefs.setDouble('long', result.latLng.longitude);
                     prefs.setString('locality', result.name);
                     print(result.latLng);
+
+                    print(
+                        "address : ${result.name} | ${result.locality} | ${result.city} | ${result.zip} | ${result.latLng.latitude} | ${result.latLng.longitude}");
                     locUpdate();
                     final token = prefs.getString('token');
+                    result.locality =
+                        result.locality == null ? "" : result.locality;
+
                     AddressBook address = AddressBook(
                       result.name,
                       result.locality,
@@ -84,6 +90,8 @@ class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       result.latLng.latitude.toString(),
                       result.latLng.longitude.toString(),
                     );
+
+                    print("address ${address.toJson().toString()}");
                     final response =
                         await _addressDataSource.postAddress(token, address);
                     print('adresss saved');

@@ -205,11 +205,13 @@ class _RestaurantPageState extends State<RestaurantPage> {
       if (!isGuest) {
         AddressBook address = AddressBook(
             result.name,
-            result.locality,
+            result.locality == null ? "" : result.locality,
             result.city,
             result.zip,
             result.latLng.latitude.toString(),
             result.latLng.longitude.toString());
+
+        print("address ${address.toJson().toString()}");
         final response = await _addressDataSource.postAddress(token, address);
         print('adresss saved');
         prefs.setInt('addressId', response['id']);
@@ -446,7 +448,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
             itemCount: category.length,
           ),
         ),
-        data.isNotEmpty
+        restaurant.length != 0
             ? Container(
                 child: ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
@@ -465,7 +467,11 @@ class _RestaurantPageState extends State<RestaurantPage> {
                   },
                 ),
               )
-            : Container()
+            : Container(
+                child: Center(
+                  child: Text("No Restaurant Found"),
+                ),
+              )
       ],
     );
   }

@@ -71,8 +71,7 @@ class _MenuCellState extends State<MenuCell> {
                     child: CachedNetworkImage(
                       imageUrl:
                           widget.item.image != null ? widget.item.image : "",
-                      errorWidget: (context, url, error) =>
-                          new Icon(Icons.error),
+                      errorWidget: (context, url, error) => Container(),
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -118,7 +117,10 @@ class _MenuCellState extends State<MenuCell> {
                           Container(
                             width: MediaQuery.of(context).size.width * 0.35,
                             child: Text(
-                              "₹ " + widget.item.pricing[0].price.toString(),
+                              widget.item.pricing.length == 0
+                                  ? "Can't Order"
+                                  : "₹ " +
+                                      widget.item.pricing[0].price.toString(),
                               style: CustomFontStyle.regularFormTextStyle(
                                   blackColor),
                             ),
@@ -127,6 +129,7 @@ class _MenuCellState extends State<MenuCell> {
                               onTap: () {
                                 print("String");
                                 selectedItemId = widget.item.id;
+                                selectedPriceId = null;
                                 _buildPricingList(context, widget.item);
                               },
                               child: Padding(
@@ -181,6 +184,50 @@ class _MenuCellState extends State<MenuCell> {
         });
   }
 
+  void _buildPricingAddRemoveItem(Single single) {
+    String size = single.pricing
+        .firstWhere((element) => element.id == selectedPriceId)
+        .size;
+    double price = single.pricing
+        .firstWhere((element) => element.id == selectedPriceId)
+        .price;
+    String name = single.name;
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, mystate) {
+              return SingleChildScrollView(
+                child: Container(
+                  height: 70.0,
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "$name ($size)",
+                          style: CustomFontStyle.mediumTextStyle(blackColor),
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Text(
+                          "$price",
+                          style: CustomFontStyle.mediumTextStyle(blackColor),
+                        ),
+                        Container(
+                            child: Center(
+                                child:
+                                    AddRemoveCart(single.id, selectedPriceId)))
+                      ]),
+                ),
+              );
+            },
+          );
+        });
+  }
+
   List<Widget> createRadioListUsers(Single single, mystate) {
     List<Widget> widgets = [];
 
@@ -204,8 +251,10 @@ class _MenuCellState extends State<MenuCell> {
             print("Current User $current");
             setSelectedUser(current);
             widget.selectedAdd(widget.item.slug);
-            addRemoveCart = AddRemoveCart(single.id, selectedPriceId);
-            mystate(() {});
+            Navigator.pop(context);
+            _buildPricingAddRemoveItem(single);
+            // _buildPricingList(context, widget.item);
+            // addRemoveCart = AddRemoveCart(single.id, selectedPriceId);
             print("${price.id} dd $current");
           },
           activeColor: Colors.green,
@@ -213,14 +262,11 @@ class _MenuCellState extends State<MenuCell> {
       );
     }
 
-    if (selectedPriceId != null) {
-      addRemoveCart = AddRemoveCart(single.id, selectedPriceId);
-    }
-
-    selectedPriceId != null
-        ? widgets
-            .add(Container(padding: EdgeInsets.all(10.0), child: addRemoveCart))
-        : Container();
+    // selectedPriceId != null
+    //     ? widgets.add(Container(
+    //         padding: EdgeInsets.all(10.0),
+    //         child: new AddRemoveCart(single.id, selectedPriceId)))
+    //     : Container();
     return widgets;
   }
 }

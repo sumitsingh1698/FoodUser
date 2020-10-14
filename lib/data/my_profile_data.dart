@@ -49,6 +49,7 @@ class ProfileDataSource {
     String url =
         checkDeliveryTrackingUrl + "?bucket_id=$bucketId&order_id=$orderId";
     return _netUtil.getData(url, token).then((dynamic res) async {
+      print("checkDeliveryTracking $res");
       return res;
     });
   }

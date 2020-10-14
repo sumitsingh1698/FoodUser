@@ -199,7 +199,10 @@ class _RestaurantDetailPage extends State<RestaurantDetailPage> {
                                               CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.max,
                                           children: <Widget>[
-                                            Text(data.restaurant[0].name,
+                                            Text(
+                                                data.restaurant[0].fssai != null
+                                                    ? "${data.restaurant[0].name} (${data.restaurant[0].fssai})"
+                                                    : "${data.restaurant[0].name}",
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
                                                   color: blackBellyColor,
@@ -406,7 +409,8 @@ class _RestaurantDetailPage extends State<RestaurantDetailPage> {
                           ),
                           tabheading.isNotEmpty
                               ? Container(
-                                  height: 450,
+                                  height:
+                                      (100 * data.single.length + 1).toDouble(),
                                   child: CustomTabView(
                                     initPosition: initPosition,
                                     itemCount: tabheading.length,
@@ -415,45 +419,49 @@ class _RestaurantDetailPage extends State<RestaurantDetailPage> {
                                       initPosition = index;
                                     },
                                     pageBuilder: (context, indexP) {
+                                      bool isItemthere = true;
+
                                       return Container(
-                                        child: ListView.builder(
-                                            shrinkWrap: true,
-                                            physics: ScrollPhysics(),
-                                            itemBuilder: ((context, index) {
-                                              return Column(
-                                                children: <Widget>[
-                                                  tabheading[indexP] ==
-                                                          data.single[index]
-                                                              .category
-                                                      ? Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  top:
-                                                                      index == 0
+                                        child: data.single.length == 0
+                                            ? Center(child: Text("No Items"))
+                                            : ListView.builder(
+                                                shrinkWrap: true,
+                                                physics: ScrollPhysics(),
+                                                itemBuilder: ((context, index) {
+                                                  return Column(
+                                                    children: <Widget>[
+                                                      tabheading[indexP] ==
+                                                              data.single[index]
+                                                                  .category
+                                                          ? Padding(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      top: index ==
+                                                                              0
                                                                           ? 10.0
                                                                           : 0),
-                                                          child: veg
-                                                              ? data.single[index].diet ==
-                                                                      'Veg'
-                                                                  ? MenuCell(
+                                                              child: veg
+                                                                  ? data.single[index].diet ==
+                                                                          'Veg'
+                                                                      ? MenuCell(
+                                                                          data.single[
+                                                                              index],
+                                                                          index,
+                                                                          slug,
+                                                                          selectedAdd)
+                                                                      : SizedBox
+                                                                          .shrink()
+                                                                  : MenuCell(
                                                                       data.single[
                                                                           index],
                                                                       index,
                                                                       slug,
-                                                                      selectedAdd)
-                                                                  : SizedBox
-                                                                      .shrink()
-                                                              : MenuCell(
-                                                                  data.single[
-                                                                      index],
-                                                                  index,
-                                                                  slug,
-                                                                  selectedAdd))
-                                                      : SizedBox.shrink()
-                                                ],
-                                              );
-                                            }),
-                                            itemCount: data.single.length),
+                                                                      selectedAdd))
+                                                          : SizedBox.shrink()
+                                                    ],
+                                                  );
+                                                }),
+                                                itemCount: data.single.length),
                                       );
                                     },
                                     tabBuilder: (context, index) {
