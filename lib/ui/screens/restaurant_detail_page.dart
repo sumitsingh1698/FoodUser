@@ -410,7 +410,7 @@ class _RestaurantDetailPage extends State<RestaurantDetailPage> {
                           tabheading.isNotEmpty
                               ? Container(
                                   height:
-                                      (100 * data.single.length + 1).toDouble(),
+                                      (150 * data.single.length + 1).toDouble(),
                                   child: CustomTabView(
                                     initPosition: initPosition,
                                     itemCount: tabheading.length,

@@ -74,19 +74,25 @@ class _FavoritesPageState extends State<FavoritesPage> {
             )
           : isLoading
               ? Center(child: CupertinoActivityIndicator())
-              : ListView.builder(
-                  itemCount: restaurants.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
-                        child: Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero),
-                            elevation: 2,
-                            child:
-                                RestaurantCellFavorites(restaurants[index])));
-                  }),
+              : restaurants.length == 0
+                  ? Container(
+                      child: Center(
+                        child: Text("No Favorites Restaurant"),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: restaurants.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 5.0, horizontal: 10),
+                            child: Card(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.zero),
+                                elevation: 2,
+                                child: RestaurantCellFavorites(
+                                    restaurants[index])));
+                      }),
     );
   }
 }

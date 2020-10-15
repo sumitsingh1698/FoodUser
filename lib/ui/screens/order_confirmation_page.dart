@@ -340,17 +340,26 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
                               builder: (context) => OfferSelect(cartDataRes
                                   .cartitems[0].fooditem.restaurant.id),
                             ));
-                        setState(() {
-                          coupon = copn;
-                        });
+                        // setState(() {
+                        //   coupon = copn;
+                        // });
                         // print('coupon restaurant ${coupon.restaurant}');
                         // print(
                         //     'coupon restaurant ${cartDataRes.cartitems[0].fooditem.restaurant.id}');
-                        if (copn != null &&
-                            (copn.isGlobal ||
-                                coupon.restaurant ==
-                                    cartDataRes
-                                        .cartitems[0].fooditem.restaurant.id)) {
+
+                        if (copn == null) {
+                          print("No offer applied");
+                        } else if (coupon != null && coupon.code == copn.code) {
+                          print("${coupon.id}  ${copn.id}");
+                          Utils.showSnackBar(_key, "Coupon Already Applied");
+                        } else if ((copn.isGlobal ||
+                            copn.restaurant ==
+                                cartDataRes
+                                    .cartitems[0].fooditem.restaurant.id)) {
+                          print(copn.code.toString());
+                          print('coupon appling');
+                          deduction = 0;
+                          coupon = copn;
                           if (discountRes >= coupon.mincartvalue &&
                               copn != null) {
                             print('is percentage ${coupon.ispercentage}');
@@ -377,7 +386,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
                           }
                         } else {
                           Utils.showSnackBar(
-                              _key, "Coupon not valid for this Restaurant");
+                              _key, "Coupon code condition doesn't match");
                         }
                       },
                       child: Row(

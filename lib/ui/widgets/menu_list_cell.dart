@@ -317,7 +317,7 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
       isGuest = true;
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
+          context, MaterialPageRoute(builder: (context) => WelcomePage()));
     } else {
       print("here in add product");
       token = prefs.getString('token');

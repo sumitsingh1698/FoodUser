@@ -228,17 +228,15 @@ class _RestaurantPageState extends State<RestaurantPage> {
         long = result.latLng.longitude;
         locality = result.name;
       });
-    } else {
-      if (isGuest)
-        data = await _restaurantDataSource.getGuestRestaurants(
-            "$lat", "$long", '');
-      else
-        data = await _restaurantDataSource.getUserRestaurants(
-            token, "$lat", "$long", '');
+    } else {}
+    if (isGuest)
+      data =
+          await _restaurantDataSource.getGuestRestaurants("$lat", "$long", '');
+    else
+      data = await _restaurantDataSource.getUserRestaurants(
+          token, "$lat", "$long", '');
 
-      print('ssssssssdaaaffafaaaggaga');
-    }
-
+    print('ssssssssdaaaffafaaaggaga');
     print("$lat hhhh hhhh  hh $long");
     category = [];
     data.forEach((e) {

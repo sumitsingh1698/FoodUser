@@ -80,59 +80,103 @@ class _OfferSelectState extends State<OfferSelect> {
       appBar: CustomCloseAppBar(
         title: "Coupon Code",
       ),
+      // body: SafeArea(
+      //   child: Column(
+      //     children: <Widget>[
+      //       Padding(
+      //         padding: EdgeInsets.all(8.0),
+      //         child: Container(
+      //             height: 50,
+      //             decoration: BoxDecoration(
+      //               border: Border.all(width: 1.0, color: Colors.grey[500]),
+      //               shape: BoxShape.rectangle,
+      //             ),
+      //             child: Center(
+      //               child: TextFormField(
+      //                 onEditingComplete: () {
+      //                   getOfferData();
+      //                 },
+      //                 controller: offerContrller,
+      //                 style: TextStyle(fontSize: 14),
+      //                 decoration: InputDecoration(
+      //                     contentPadding: EdgeInsets.only(top: 18),
+      //                     border: InputBorder.none,
+      //                     prefixIcon: Icon(
+      //                       Icons.search,
+      //                       color: Colors.grey[500],
+      //                       size: 24,
+      //                     ),
+      //                     suffixIcon: IconButton(
+      //                       onPressed: () {
+      //                         offerContrller.clear();
+      //                       },
+      //                       icon: Icon(Icons.clear),
+      //                       color: Colors.grey[500],
+      //                       iconSize: 24,
+      //                     ),
+      //                     hintText: "Enter Your Coupon Code"),
+      //               ),
+      //             )),
+      //       ),
+      //       SizedBox(
+      //         height: 30,
+      //       ),
+      //       coupon ? couponBox(offerModel) : couponlist()
+      //     ],
+      //   ),
+      // ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 1.0, color: Colors.grey[500]),
-                      shape: BoxShape.rectangle,
+        child: Stack(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1.0, color: Colors.grey[500]),
+                    shape: BoxShape.rectangle,
+                  ),
+                  child: Center(
+                    child: TextFormField(
+                      onEditingComplete: () {
+                        getOfferData();
+                      },
+                      controller: offerContrller,
+                      style: TextStyle(fontSize: 14),
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 18),
+                          border: InputBorder.none,
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.grey[500],
+                            size: 24,
+                          ),
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              offerContrller.clear();
+                            },
+                            icon: Icon(Icons.clear),
+                            color: Colors.grey[500],
+                            iconSize: 24,
+                          ),
+                          hintText: "Enter Your Coupon Code"),
                     ),
-                    child: Center(
-                      child: TextFormField(
-                        onEditingComplete: () {
-                          getOfferData();
-                        },
-                        controller: offerContrller,
-                        style: TextStyle(fontSize: 14),
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 18),
-                            border: InputBorder.none,
-                            prefixIcon: Icon(
-                              Icons.search,
-                              color: Colors.grey[500],
-                              size: 24,
-                            ),
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                offerContrller.clear();
-                              },
-                              icon: Icon(Icons.clear),
-                              color: Colors.grey[500],
-                              iconSize: 24,
-                            ),
-                            hintText: "Enter Your Coupon Code"),
-                      ),
-                    )),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              coupon ? couponBox(offerModel) : couponlist()
-            ],
-          ),
+                  )),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Padding(padding: EdgeInsets.only(top: 60.0), child: couponlist())
+          ],
         ),
       ),
     );
   }
 
   Widget couponlist() {
+    print("offerlist");
     return loading
-        ? CupertinoActivityIndicator()
+        ? Center(child: CupertinoActivityIndicator())
         : offers.length == 0
             ? Container(
                 child: Center(
