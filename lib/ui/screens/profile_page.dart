@@ -152,8 +152,8 @@ class _ProfilePageState extends State<ProfilePage> {
           SizedBox(height: 12.0),
           Text(
             userData == null
-                ? lastName + " " + userName
-                : userData.lastName + " " + userData.firstName,
+                ? lastName.toString() + " " + userName.toString()
+                : userData.lastName.toString() + " " + userData.firstName,
             style: TextStyle(
                 fontFamily: 'Montserrat',
                 fontSize: 18.0,

@@ -123,7 +123,7 @@ class _DeliveryTrackingPageState extends State<DeliveryTrackingPage> {
           height: 50.0,
           child: Center(
             child: Text(
-              "error " + data['message'],
+              data['message'].toString(),
               style: CustomFontStyle.smallTextStyle(blackColor),
             ),
           )),

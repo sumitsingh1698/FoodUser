@@ -197,7 +197,7 @@ class _OfferSelectState extends State<OfferSelect> {
     return GestureDetector(
       onTap: () => Navigator.pop(context, searchcoupon),
       child: Container(
-        height: 170,
+        height: 180,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Card(
@@ -221,17 +221,30 @@ class _OfferSelectState extends State<OfferSelect> {
                       Container(
                         width: 200,
                         child: Text(
-                          searchcoupon.description,
+                          searchcoupon.code,
                           style: TextStyle(
                             letterSpacing: 1.0,
                             fontFamily: 'MontserratMedium',
                             color: Colors.green,
-                            fontSize: 13.0,
+                            fontSize: 18.0,
                             fontWeight: FontWeight.w300,
                           ),
                         ),
                       ),
                     ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'Description: ${searchcoupon.description}',
+                    style: TextStyle(
+                      letterSpacing: 1.0,
+                      fontFamily: 'MontserratMedium',
+                      color: Colors.black,
+                      fontSize: 13.0,
+                      fontWeight: FontWeight.w300,
+                    ),
                   ),
                   SizedBox(
                     height: 10,

@@ -10,6 +10,8 @@ import 'package:Belly/models/cart_upload_request_model.dart';
 import 'package:Belly/models/restaurant_detail_model.dart';
 import 'package:Belly/ui/screens/login_page.dart';
 import 'package:Belly/ui/screens/welcome_page.dart';
+import 'package:Belly/utils/show_snackbar.dart';
+import 'package:Belly/utils/show_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:Belly/constants/Style.dart';
@@ -131,7 +133,9 @@ class _MenuCellState extends State<MenuCell> {
                                 print("String");
                                 selectedItemId = widget.item.id;
                                 selectedPriceId = null;
-                                _buildPricingList(context, widget.item);
+                                widget.item.pricing.length == 0
+                                    ? showToast("Can't Order", greyColor)
+                                    : _buildPricingList(context, widget.item);
                               },
                               child: Padding(
                                 padding: EdgeInsets.only(
@@ -207,11 +211,8 @@ class _MenuCellState extends State<MenuCell> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "$name ($size)",
+                          "${name.split(' ')[0]} ($size)",
                           style: CustomFontStyle.mediumTextStyle(blackColor),
-                        ),
-                        SizedBox(
-                          width: 15,
                         ),
                         Text(
                           "$price",
@@ -542,12 +543,12 @@ class _AddRemoveCartState extends State<AddRemoveCart> {
                 ),
               ),
         Container(
-          width: 10,
+          width: 31,
           child: Center(
             child: _countLoader
                 ? SizedBox(
                     height: 18,
-                    width: 10,
+                    width: 31,
                     child: CircularProgressIndicator(
                       valueColor:
                           new AlwaysStoppedAnimation<Color>(greenBellyColor),

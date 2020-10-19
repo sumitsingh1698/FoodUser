@@ -45,10 +45,12 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     return Scaffold(
         resizeToAvoidBottomPadding: false,
         body: (isLoading)
-            ? Center(
-                child: CircularProgressIndicator(
-                  valueColor:
-                      new AlwaysStoppedAnimation<Color>(greenBellyColor),
+            ? Container(
+                child: Center(
+                  child: CircularProgressIndicator(
+                    valueColor:
+                        new AlwaysStoppedAnimation<Color>(greenBellyColor),
+                  ),
                 ),
               )
             : Stack(children: <Widget>[

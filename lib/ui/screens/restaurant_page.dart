@@ -326,7 +326,11 @@ class _RestaurantPageState extends State<RestaurantPage> {
                       builder: (BuildContext context, LoadStatus mode) {
                         Widget body;
                         if (mode == LoadStatus.idle) {
-                          body = Text("pull up load");
+                          // body = Container(
+                          //   child: Center(
+                          //     child: CircularProgressIndicator(),
+                          //   ),
+                          // );
                         } else if (mode == LoadStatus.loading) {
                           body = CupertinoActivityIndicator();
                         } else if (mode == LoadStatus.failed) {

@@ -72,6 +72,7 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
       print('toooooooooken');
       print(token);
       cartDataResponse = await _restaurantDataSource.cartDetails(token);
+      print("cart Detail ${cartDataResponse[1].toString()}");
       if (cartDataResponse[0]) {
         print("Rwsults of Final Item is validd i GUESS");
 

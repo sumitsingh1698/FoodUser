@@ -1,12 +1,9 @@
-import 'package:Belly/models/cart_provider_class.dart';
 import 'package:Belly/models/offerModel.dart';
 import 'package:Belly/presentation/custom_icons_icons.dart';
 import 'package:Belly/ui/screens/OfferSelect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui';
 import 'package:Belly/constants/Color.dart';
@@ -346,13 +343,23 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
                         // print('coupon restaurant ${coupon.restaurant}');
                         // print(
                         //     'coupon restaurant ${cartDataRes.cartitems[0].fooditem.restaurant.id}');
-
+                        print(discountRes);
                         if (copn == null) {
                           print("No offer applied");
                         } else if (coupon != null && coupon.code == copn.code) {
                           print("${coupon.id}  ${copn.id}");
-                          Utils.showSnackBar(_key, "Coupon Already Applied");
-                        } else if ((copn.isGlobal ||
+                          Utils.showSnackBar(
+                              _key, "Same Coupon Already Applied");
+                        } else if (!copn.isGlobal &&
+                            copn.restaurant !=
+                                cartDataRes
+                                    .cartitems[0].fooditem.restaurant.id) {
+                          Utils.showSnackBar(_key,
+                              "Coupon is not applicable for this restaurant");
+                        }  else if (copn.mincartvalue > discountRes) {
+                          Utils.showSnackBar(
+                              _key, "Coupon condition doesn't match");
+                        }else if ((copn.isGlobal ||
                             copn.restaurant ==
                                 cartDataRes
                                     .cartitems[0].fooditem.restaurant.id)) {
@@ -383,10 +390,13 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
                             calculation();
                             Utils.showSnackBar(_key, "Successfully Applied");
                             print('ddddddedduccctiion   $deduction');
+                          } else {
+                            Utils.showSnackBar(
+                                _key, "Coupon is not applicable for this restaurant");
                           }
                         } else {
-                          Utils.showSnackBar(
-                              _key, "Coupon code condition doesn't match");
+                          Utils.showSnackBar(_key,
+                              "Coupon is not applicable for this restaurant");
                         }
                       },
                       child: Row(
@@ -535,7 +545,7 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
                               style: TextStyle(color: blackColor),
                             ),
                             Text(
-                              "₹ " +
+                              "- ₹ " +
                                   (cartDataRes.total - discountRes).toString(),
                               style: TextStyle(color: blackColor),
                             ),
